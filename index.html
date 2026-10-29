@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ValuMate AI Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#003365;--navy-deep:#002347;--navy-soft:#eef2f9;--accent:#2e9e6b;
+  --bg:#f7f8fa;--surface:#fff;--fg:#1a2333;--muted:#64748b;--border:#e2e8f0;--danger:#c0392b;
+  --font:"Geist",-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  --lg1:#003365;--lg2:#9f9f9f;
+}
+@media (prefers-color-scheme:dark){
+  :root{--lg1:#e7ecf5;--bg:#0b1220;--surface:#131c2e;--fg:#e7ecf5;--muted:#94a3b8;--border:#263247;--navy:#4d78c0;--navy-soft:#243a5e}
+}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--surface);color:var(--fg);overflow:hidden}
+#app{width:100%;height:100dvh;background:var(--surface);display:flex;flex-direction:column;position:relative;overflow:hidden}
+.brand{display:flex;align-items:center;gap:10px;margin-right:4px;transition:opacity .15s}
+.brand svg{width:60px;height:39px;display:block}
+.brand span{display:none;font-size:21px;font-weight:700;letter-spacing:-.01em;color:var(--lg1)}
+.brand span i{font-style:normal;color:var(--lg2)}
+#app[data-step=welcome] .brand{opacity:0}
+.logo-full{display:block;width:200px;height:auto;aspect-ratio:778.47/339.31;margin-bottom:22px}
+.tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--navy);font-weight:600;margin-bottom:12px}
+.hero{position:relative;overflow:hidden;--lg1:#fff;--lg2:rgba(255,255,255,.55)}
+.hero>*{position:relative}
+.hero .wm{position:absolute;right:-28px;bottom:-30px;width:210px;height:136px;opacity:.1;pointer-events:none}
+.sheet .logo-mark{width:84px;height:54px;display:block;margin-bottom:12px}
+foot{display:none}
+#app[data-step=welcome] #rv{border-color:var(--border);background:var(--surface);color:var(--muted)}
+@media (min-width:600px){.brand span{display:block}}
+.cols{flex:1;display:flex;flex-direction:column;min-height:0}
+.cols>div{display:flex;flex-direction:column}
+.cols>.fill{flex:1}
+.cols>.steps{display:none}
+.hd{flex:1;display:flex;flex-direction:column;justify-content:center}
+header{display:flex;align-items:center;gap:12px;padding:0 52px 0 16px;height:64px;flex:none;background:linear-gradient(95deg,var(--navy-deep),#0a4a8f);--lg1:#fff;--lg2:rgba(255,255,255,.62);transition:background .2s}
+#app[data-step=welcome] header{background:transparent}
+.back{width:32px;height:32px;border:0;background:none;color:rgba(255,255,255,.85);font-size:22px;cursor:pointer;visibility:hidden}
+.back.on{visibility:visible}
+.bar{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.22);overflow:hidden;opacity:0;transition:opacity .15s}
+.bar.on{opacity:1}
+.bar i{display:block;height:100%;width:0;background:var(--navy);border-radius:3px;transition:width .25s ease;background:linear-gradient(90deg,#fff,#7fe0b0)}
+.step-ct{font-size:13px;font-weight:600;color:rgba(255,255,255,.85);width:32px;text-align:right;visibility:hidden}
+.step-ct.on{visibility:visible}
+main{flex:1;position:relative;min-height:0}
+section{position:absolute;inset:0;padding:20px max(22px,calc((100% - 640px)/2)) 16px;display:flex;flex-direction:column;opacity:0;transform:translateX(16px);pointer-events:none;transition:opacity .18s ease,transform .18s ease}
+section.on{opacity:1;transform:none;pointer-events:auto}
+section.out{transform:translateX(-16px)}
+h1{font-size:28px;line-height:1.15;font-weight:700;letter-spacing:-.02em}
+h2{font-size:23px;line-height:1.2;font-weight:700;letter-spacing:-.015em}
+.sub{color:var(--muted);font-size:15px;line-height:1.4;margin-top:8px}
+.grow{flex:1}
+.btn{width:100%;border:0;border-radius:10px;background:var(--navy);color:#fff;font:600 17px var(--font);padding:15px;cursor:pointer;transition:transform .08s,opacity .15s}
+.btn:hover{background:var(--navy-deep)}
+.btn.alt:hover,.btn.ghost:hover{background:var(--navy-soft)}
+.btn.apple:hover{background:#1a1a1a}
+.btn:focus-visible,.tile:focus-visible,.chip:focus-visible,.row:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.35;pointer-events:none}
+.btn.ghost{background:none;color:var(--muted);font-weight:500;font-size:14px;padding:10px}
+.btn.apple{background:#000;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.alt{background:var(--surface);color:var(--fg);border:1px solid var(--border)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.tiles.one{grid-template-columns:1fr}
+.tile{border:1.5px solid var(--border);border-radius:14px;padding:13px 12px;background:var(--surface);color:var(--fg);font:500 15px var(--font);text-align:left;cursor:pointer;transition:border-color .12s,background .12s,transform .08s;display:flex;align-items:center;gap:10px}
+.tile:active{transform:scale(.97)}
+.tile.sel{border-color:var(--navy);background:var(--navy-soft);box-shadow:0 0 0 1px var(--navy)}
+.tile:hover{border-color:var(--navy)}
+.tile svg{width:22px;height:22px;flex:none;stroke:var(--navy);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tile small{display:block;color:var(--muted);font-weight:400;font-size:12px;margin-top:2px}
+.big{font-size:44px;font-weight:700;letter-spacing:-.03em;margin-top:22px;font-variant-numeric:tabular-nums}
+.hint{color:var(--muted);font-size:13px;margin-top:4px}
+input[type=range]{width:100%;margin-top:22px;accent-color:var(--navy);height:32px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{border:1.5px solid var(--border);background:var(--surface);color:var(--fg);border-radius:20px;padding:7px 13px;font:500 13px var(--font);cursor:pointer}
+.chip.sel{border-color:var(--navy);background:var(--navy-soft)}
+.live{margin-top:14px;border-radius:14px;background:var(--navy-soft);padding:11px 14px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);transition:opacity .2s}
+.live b{font-size:16px;color:var(--fg);font-variant-numeric:tabular-nums}
+.hero{margin-top:14px;border-radius:20px;background:linear-gradient(160deg,var(--navy-deep),#0a4a8f);color:#fff;padding:22px 20px;text-align:center}
+.hero .lab{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.hero .rng{font-size:34px;font-weight:700;letter-spacing:-.025em;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.hero .mult{font-size:14px;opacity:.85}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.stat{border:1px solid var(--border);border-radius:12px;padding:10px 8px;text-align:center}
+.stat b{display:block;font-size:15px;font-variant-numeric:tabular-nums}
+.stat span{font-size:11px;color:var(--muted)}
+.meter{display:flex;gap:4px;margin-top:8px}
+.meter i{flex:1;height:6px;border-radius:3px;background:var(--border)}
+.meter i.f{background:var(--accent)}
+.row{display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-top:8px;cursor:pointer;background:var(--surface);color:var(--fg);width:100%;text-align:left;font:inherit}
+.row .t{flex:1;font-size:14px;font-weight:600}
+.row .t small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:2px}
+.row .go{color:var(--muted);font-size:18px}
+.row.done{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
+.note{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+.sheet{position:absolute;inset:0;background:rgba(0,20,45,.45);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .18s;z-index:5}
+.sheet.on{opacity:1;pointer-events:auto}
+.sheet>div{width:100%;background:var(--surface);border-radius:24px 24px 0 0;padding:22px 22px 18px;transform:translateY(24px);transition:transform .2s ease}
+.sheet.on>div{transform:none}
+.sheet .gap{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+#rv{position:absolute;top:19px;right:14px;z-index:6;width:26px;height:26px;border-radius:13px;border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;font:600 13px var(--font);cursor:pointer}
+#rvp{position:absolute;left:12px;right:12px;bottom:12px;z-index:7;background:#0b1220;color:#e7ecf5;border-radius:16px;padding:14px 16px;font-size:12.5px;line-height:1.45;display:none;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+#rvp.on{display:block}
+#rvp b{color:#7fd1a8;display:block;margin-bottom:4px;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.err{color:var(--danger);font-size:13px;margin-top:10px;min-height:18px}
+
+@media (min-width:900px){
+  header{padding:0 84px 0 48px;gap:22px;height:76px}
+  .brand span{font-size:26px}
+  .brand svg{width:74px;height:48px}
+  .brand{gap:14px;margin-right:12px}
+  section{padding:40px max(48px,calc((100% - 680px)/2)) 32px}
+  section.wide{padding:40px max(48px,calc((100% - 1080px)/2)) 32px}
+  h1{font-size:54px}
+  h2{font-size:34px}
+  .sub{font-size:17px;margin-top:10px}
+  .tiles{grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}
+  .tiles.one{grid-template-columns:repeat(3,1fr)}
+  .tiles.four{grid-template-columns:repeat(4,1fr)}
+  .tile{padding:20px 18px;font-size:16px;border-radius:16px}
+  .tile svg{width:26px;height:26px}
+  .big{font-size:68px;margin-top:30px}
+  input[type=range]{margin-top:30px}
+  .chip{font-size:14px;padding:9px 16px}
+  .cols{flex-direction:row;gap:64px;align-items:center}
+  .cols>div{flex:1}
+  .cols>.fill{flex:1}
+  .grow{flex:0;height:28px}
+  section{justify-content:center}
+  .hd{flex:0;margin-bottom:32px}
+  #save{margin-top:24px}
+  .cols>.l-top{align-self:flex-start}
+  .hero{padding:36px 28px}
+  .hero .rng{font-size:48px}
+  .stat{padding:16px 10px}
+  .stat b{font-size:18px}
+  .cols>.steps{display:flex;flex-direction:column;gap:18px}
+  .steps div{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--border);border-radius:16px;padding:18px 20px}
+  .steps b{flex:none;width:32px;height:32px;border-radius:16px;background:var(--navy-soft);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:15px}
+  .steps span{font-size:15px;line-height:1.4}
+  .steps span em{display:block;font-style:normal;font-weight:600;font-size:16px;margin-bottom:2px}
+  .logo-full{width:330px;margin-bottom:38px}
+  .tag{font-size:13px;color:var(--navy);margin-bottom:16px}
+  #s-welcome{padding:0;top:-76px}
+  #app[data-step=welcome] #rv{border-color:rgba(255,255,255,.5);background:transparent;color:#fff}
+  #s-welcome .cols{gap:0;align-items:stretch}
+  #s-welcome .cols>div:first-child{padding:0 72px 0 max(48px,calc(50% - 540px));justify-content:center}
+  #s-welcome .steps{position:relative;overflow:hidden;justify-content:center;padding:0 max(48px,calc(50% - 540px)) 0 72px;gap:16px;background:linear-gradient(155deg,var(--navy-deep),#0a4a8f);--lg1:#fff;--lg2:rgba(255,255,255,.55)}
+  #s-welcome .steps div{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;position:relative;backdrop-filter:blur(6px)}
+  #s-welcome .steps b{background:var(--accent);color:#fff}
+  #s-welcome .steps span{color:rgba(255,255,255,.82)}
+  #s-welcome .steps span em{color:#fff}
+  #s-welcome .steps .wm{position:absolute;right:-60px;bottom:-40px;width:520px;height:337px;opacity:.07}
+  foot{display:block;position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:12px;color:var(--muted);pointer-events:none}
+  #app[data-step=welcome] foot{display:none}
+  .sheet{align-items:center;justify-content:center}
+  .sheet>div{max-width:440px;border-radius:24px;padding:28px}
+  #rv{top:25px;right:28px}
+  #rvp{right:auto;left:24px;bottom:24px;width:420px}
+}
+@media (min-width:900px) and (max-height:760px){
+  h1{font-size:44px}.big{font-size:52px;margin-top:20px}.tile{padding:14px 16px}.tiles{margin-top:22px}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><g id="lg-paths"><path style="fill:var(--lg1)" d="M388.79,188.91c1.69,3.63.48,7.99-3.14,9.69-3.62,1.7-7.73.49-9.42-2.91v-.24l-26.08-51.34h15.94l22.7,44.8Z"/><path style="fill:var(--lg2)" d="M439.26,157.91l-7.24-2.67s0,.24-.24.49c-.24.48-.48.97-.97,1.94-.73,1.7-1.93,3.88-3.14,6.54-2.66,5.57-6.28,12.84-10.14,20.1-3.86,7.27-7.73,14.77-11.11,20.34-1.69,2.91-3.14,5.33-4.59,7.27-.72.97-1.45,1.94-2.17,2.66-.48.48-.97.97-1.69,1.45-.72.49-2.17,1.21-4.35,1.21s-3.86-.97-4.35-1.45c-.72-.48-1.45-.97-1.69-1.45-.72-.73-1.69-1.94-2.41-2.91-1.45-1.94-3.14-4.6-4.83-7.75-.24-.48-.72-.97-.97-1.7,1.45.49,2.9.73,4.35.73,4.35,0,7.97-1.94,9.9-4.6v.24c.24-.24.48-.73.72-.97,3.14-5.33,7-12.35,10.62-19.62,3.62-7.27,7.24-14.53,10.14-19.86,1.45-2.67,2.41-5.09,3.14-6.54.24-.24.24-.73.48-.97l-5.55-2.18,21.01-16.95,5.07,26.64Z"/><path style="fill:var(--lg1)" d="M284.71,157.42c-2.17,8.72-3.38,17.92-3.38,27.37h-66.89l42.26-16.47,8.21-3.39,7.24-2.91,12.56-4.6Z"/><path style="fill:var(--lg2)" d="M425.73,64.67c46.12,11.87,81.86,49.89,90.8,97.12l58.92,22.77h-67.62c-.24-50.13-32.6-92.52-77.52-107.29l-4.59-12.59Z"/><path style="fill:var(--lg2)" d="M416.8,55.95l6.76,19.38c-9.42-2.42-19.08-3.88-29.22-3.88-50.71,0-93.45,33.42-107.94,79.2l-12.56,5.09c11.35-47.47,49.99-84.28,98.52-93.24L395.79,0l21.01,55.95Z"/><path style="fill:var(--lg1)" d="M394.82,77.74c22.7,0,43.47,7.02,60.85,18.89l35.01-16.71-13.04,36.57c15.45,18.41,24.87,42.14,25.36,68.05h-18.84c-.97-48.68-40.57-87.67-89.35-87.67s-88.14,38.99-89.11,87.67h-18.83c.48-22.52,7.49-43.59,19.8-60.79l-14.49-41.17,36.95,17.68c18.11-14.05,40.81-22.52,65.68-22.52Z"/><path style="fill:var(--lg1)" d="M43.71,308.54c2.04,4.01,4.6,8.78-2.56,12.79-5.62,2.51-9.46-1.5-11.5-5.27v-.25L0,259.14h18.15l25.56,49.4Z"/><path style="fill:var(--lg2)" d="M99.01,275.43l-7.87-2.94s0,.24-.25.49c-.25.49-.49,1.22-.98,1.96-.74,1.71-1.97,4.16-3.44,7.1-2.95,5.87-6.89,13.71-11.07,21.54-4.18,7.83-8.37,15.91-12.06,21.79-1.72,2.94-3.44,5.63-4.92,7.83-.74.98-1.48,1.96-2.46,2.94-.49.49-.98.98-1.97,1.47-.74.49-2.46,1.47-4.67,1.47-2.46,0-4.18-.98-4.67-1.47-.74-.49-1.48-1.22-1.97-1.47-.98-.98-1.72-1.96-2.46-2.94-1.48-2.2-3.44-5.14-5.41-8.32-.25-.49-.74-1.22-.98-1.71,1.48.49,2.95.73,4.67.73,4.67,0,8.61-1.96,10.83-5.14v.24c.25-.24.49-.73.74-1.22,3.44-5.63,7.63-13.46,11.56-21.05,3.94-7.83,7.87-15.42,10.83-21.3,1.48-2.94,2.71-5.39,3.44-7.1.25-.24.25-.73.49-.98l-6.15-2.2,22.88-18.11,5.9,28.39Z"/><path style="fill:var(--lg1)" d="M148.51,338.1l-6.04-19.62h-29.94l-6.04,19.62h-18.84l29.22-83.07h21.25l29.22,83.07h-18.84ZM132.33,284.57c-.48-1.21-.97-2.91-1.45-5.09-.48-2.18-1.21-4.12-1.93-6.05-.72-2.18-1.21-3.88-1.45-5.33-.48,1.45-.97,3.39-1.69,5.81-.72,2.18-1.21,4.36-1.93,6.54-.48,1.94-.97,3.39-1.21,4.36l-5.79,19.13h21.49l-6.04-19.38Z"/><path style="fill:var(--lg1)" d="M177.73,338.1v-82.59h17.39v68.3h33.57v14.53h-50.95v-.24Z"/><path style="fill:var(--lg1)" d="M309.1,309.03c0,5.81-1.21,10.9-3.86,15.5-2.42,4.6-6.28,8.23-11.35,10.9-5.07,2.66-11.35,3.88-19.08,3.88-10.87,0-19.32-2.67-24.87-8.24-5.79-5.57-8.45-13.08-8.45-22.28v-53.28h17.39v50.62c0,6.78,1.45,11.62,4.11,14.29,2.66,2.66,7,4.12,12.32,4.12,3.86,0,7-.73,9.42-1.94,2.41-1.21,4.1-3.39,5.31-6.05,1.21-2.66,1.69-6.3,1.69-10.66v-50.38h17.39v53.52Z"/><path style="fill:var(--lg1)" d="M364.16,338.1l-19.8-64.91h-.48c0,1.45.24,3.88.24,7.02.24,3.15.24,6.3.48,9.93.24,3.39.24,6.54.24,9.45v38.51h-15.7v-82.59h23.91l19.56,63.21h.24l20.77-63.21h23.91v82.59h-16.18v-48.2c.24-3.39.24-6.54.24-9.69.24-3.15.24-5.33.24-7.02h-.48l-21.25,64.66h-15.94v.24Z"/><path style="fill:var(--lg1)" d="M488.76,338.1l-6.04-19.62h-29.94l-6.04,19.62h-18.84l29.22-83.07h21.25l29.22,83.07h-18.84ZM472.58,284.57c-.48-1.21-.97-2.91-1.45-5.09-.73-1.94-1.21-4.12-1.93-6.05-.72-2.18-1.21-3.88-1.45-5.33-.48,1.45-.97,3.39-1.69,5.81-.73,2.18-1.21,4.36-1.93,6.54-.48,1.94-.97,3.39-1.21,4.36l-5.79,19.13h21.49l-6.04-19.38Z"/><path style="fill:var(--lg1)" d="M541.65,338.1h-17.39v-68.06h-22.46v-14.53h62.3v14.53h-22.46v68.06Z"/><path style="fill:var(--lg1)" d="M624.23,338.1h-47.57v-82.59h47.57v14.29h-29.94v18.16h28.01v14.29h-28.01v21.31h29.94v14.53Z"/><path style="fill:var(--lg2)" d="M718.62,338.29l-5.98-19.55h-29.9l-5.98,19.55h-18.74l28.98-82.45h21.28l29.09,82.45h-18.74ZM702.52,285.04c-.38-1.3-.88-2.95-1.49-4.95-.61-1.99-1.23-4.02-1.84-6.09-.61-2.07-1.11-3.87-1.49-5.41-.38,1.53-.92,3.45-1.61,5.75-.61,2.22-1.23,4.37-1.84,6.44-.54,1.99-.96,3.41-1.27,4.26l-5.86,19.09h21.39l-5.98-19.09ZM778.47,338.29h-37.38v-9.89l10.01-4.6v-53.13l-10.01-4.6v-9.89h37.38v9.89l-10,4.6v53.13l10,4.6v9.89Z"/></g></defs><symbol id="lg-full" viewBox="0 0 778.47 339.31"><use href="#lg-paths"/></symbol><symbol id="lg-mark" viewBox="215 0 365 236"><use href="#lg-paths"/></symbol></svg>
+<div id="app" data-step="welcome">
+  <button id="rv" title="Review notes">?</button>
+  <div id="rvp"></div>
+  <header>
+    <div class="brand"><svg><use href="#lg-mark"/></svg><span>ValuMate <i>AI</i></span></div>
+    <button class="back" id="back" aria-label="Back">‹</button>
+    <div class="bar" id="bar"><i id="barfill"></i></div>
+    <div class="step-ct" id="ct"></div>
+  </header>
+  <main id="main">
+
+    <section id="s-welcome" class="wide">
+      <div class="cols">
+        <div class="fill">
+          <div class="hd">
+            <svg class="logo-full"><use href="#lg-full"/></svg>
+            <div class="tag">Business Valuation that Makes Sense</div>
+            <h1>Find out what your business is worth in about a minute.</h1>
+            <p class="sub">Five quick taps. A real estimate backed by what a lender would actually fund. No account needed.</p>
+          </div>
+          <button class="btn" data-next style="max-width:420px">Get my estimate</button>
+          <p class="note" style="text-align:left">Takes about 60 seconds. Nothing is saved until you choose.</p>
+        </div>
+        <div class="steps">
+          <svg class="wm"><use href="#lg-mark"/></svg>
+          <div><b>1</b><span><em>Answer five quick questions</em>Industry, revenue, earnings, owners. Smart defaults fill the rest.</span></div>
+          <div><b>2</b><span><em>See your value range right away</em>Based on what a lender would actually fund, not a generic multiple.</span></div>
+          <div><b>3</b><span><em>Save it, or sharpen it</em>Create an account only when you want to keep the report or add real financials.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s-role">
+      <h2>What brings you here?</h2>
+      <p class="sub">This tailors the wording and what we show you first.</p>
+      <div class="tiles one" data-q="role">
+        <button class="tile" data-v="owner"><svg viewBox="0 0 24 24"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-7h6v7"/></svg><span>I own a business<small>See what it's worth today</small></span></button>
+        <button class="tile" data-v="buyer"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-5-5"/></svg><span>I'm looking to buy<small>Check what a deal can support</small></span></button>
+        <button class="tile" data-v="advisor"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 3.2-6 6.5-6s6 2 6.5 6"/><path d="M17 11l1.5 1.5L22 9"/></svg><span>I advise clients<small>Broker, CPA, banker</small></span></button>
+      </div>
+    </section>
+
+    <section id="s-industry">
+      <h2 id="q-industry">What kind of business is it?</h2>
+      <p class="sub">We'll fill in typical margins and owner pay for it. You can change them next.</p>
+      <div class="tiles" data-q="industry" id="industry-tiles"></div>
+    </section>
+
+    <section id="s-revenue">
+      <h2>About how much revenue per year?</h2>
+      <p class="sub">A rough number is fine.</p>
+      <div class="big" id="rev-out">$1,000,000</div>
+      <input type="range" id="rev" min="0" max="100" value="50" step="1">
+      <div class="chips" id="rev-chips"></div>
+      <div class="grow"></div>
+      <div class="live" id="live-rev"><span>Estimate so far</span><b>…</b></div>
+      <button class="btn" data-next style="margin-top:12px">Continue</button>
+    </section>
+
+    <section id="s-profit">
+      <h2>What does it earn for the owner?</h2>
+      <p class="sub">Profit before the owner's own pay. We started you at the typical level for <span id="ind-name">your industry</span>.</p>
+      <div class="big" id="pr-out">$150,000</div>
+      <div class="hint" id="pr-hint">12% of revenue · typical for the industry</div>
+      <input type="range" id="pr" min="2" max="45" value="12" step="1">
+      <div class="chips"><button class="chip sel" id="pr-reset">Use industry typical</button></div>
+      <div class="grow"></div>
+      <div class="live" id="live-pr"><span>Estimate so far</span><b>…</b></div>
+      <button class="btn" data-next style="margin-top:12px">Continue</button>
+    </section>
+
+    <section id="s-owners">
+      <h2>How many owners work in the business day to day?</h2>
+      <p class="sub">A buyer would need to replace them, so it changes what the business can support.</p>
+      <div class="tiles one four" data-q="owners">
+        <button class="tile" data-v="1"><span>Just one<small>Owner-operator</small></span></button>
+        <button class="tile" data-v="2"><span>Two<small>Partners or spouses</small></span></button>
+        <button class="tile" data-v="3"><span>Three or more</span></button>
+        <button class="tile" data-v="0"><span>None, it runs without me<small>Managers are already in place</small></span></button>
+      </div>
+    </section>
+
+    <section id="s-result" class="wide">
+      <div class="cols">
+      <div>
+      <div style="font-size:13px;color:var(--muted)">Your ballpark estimate</div>
+      <div class="hero">
+        <svg class="wm"><use href="#lg-mark"/></svg>
+        <div class="lab">Estimated value</div>
+        <div class="rng" id="r-range">$0 – $0</div>
+        <div class="mult" id="r-mult"></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="r-loan">–</b><span>Supportable loan</span></div>
+        <div class="stat"><b id="r-down">–</b><span>Down payment</span></div>
+        <div class="stat"><b id="r-pay">–</b><span>Monthly payment</span></div>
+      </div>
+      </div>
+      <div class="fill">
+      <div style="margin-top:14px;font-size:13px;display:flex;justify-content:space-between"><b>Accuracy: Ballpark</b><span style="color:var(--muted)">1 of 3</span></div>
+      <div class="meter"><i class="f"></i><i></i><i></i></div>
+      <p class="hint" style="margin-top:8px">Built on industry-typical numbers. Add your real financials to tighten it.</p>
+      <div class="grow"></div>
+      <button class="btn" id="save">Save this report</button>
+      <button class="btn ghost" id="tweak">Adjust my answers</button>
+      </div>
+      </div>
+    </section>
+
+    <section id="s-home" class="wide">
+      <div class="cols">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><h2>Your valuation</h2><span style="font-size:12px;color:var(--accent);font-weight:600">Saved</span></div>
+        <div class="hero">
+          <svg class="wm"><use href="#lg-mark"/></svg>
+          <div class="rng" id="h-range"></div>
+          <div class="mult" id="h-ind"></div>
+        </div>
+        <div style="margin-top:14px;font-size:13px;display:flex;justify-content:space-between"><b id="h-acc">Accuracy: Ballpark</b><span style="color:var(--muted)" id="h-acc2">1 of 3</span></div>
+        <div class="meter" id="h-meter"><i class="f"></i><i></i><i></i></div>
+      </div>
+      <div class="fill">
+        <div style="margin-top:14px;font-size:13px;font-weight:600">Tighten your estimate</div>
+        <button class="row" data-ask="fin"><div class="t">Add your financials<small>Upload a P&amp;L or connect QuickBooks. We read revenue, costs, interest, depreciation, owner pay, and trends for you.</small></div><span class="go">›</span></button>
+        <button class="row" data-ask="biz"><div class="t">Business details<small>Legal name, address, industry code, years owned, other locations, website and social links</small></div><span class="go">›</span></button>
+        <button class="row" data-ask="bs"><div class="t">Balance sheet and assets<small>Upload it or enter it. Moves you to Verified.</small></div><span class="go">›</span></button>
+        <button class="row" data-ask="prof"><div class="t">Finish your profile<small>Name, phone, state, zip, booking link, text updates. All optional.</small></div><span class="go">›</span></button>
+        <div class="grow"></div>
+        <p class="note">Full report, PDF export, and sharing unlock at Refined.</p>
+      </div>
+      </div>
+    </section>
+  </main>
+
+  <foot>ValuMate AI · Business Valuation that Makes Sense</foot>
+  <div class="sheet" id="sheet-auth"><div>
+    <svg class="logo-mark"><use href="#lg-mark"/></svg>
+    <h2>Save your report</h2>
+    <p class="sub">One tap, no password. Your estimate comes with you.</p>
+    <div class="gap">
+      <button class="btn apple" data-auth="Apple"><svg width="16" height="18" viewBox="0 0 17 20" fill="#fff"><path d="M14.1 10.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.8-3-.8C4.7 5.4 3.200 6.300 2.400 7.700c-1.700 2.900-.4 7.200 1.200 9.500.8 1.100 1.700 2.400 2.900 2.400 1.200 0 1.600-.8 3-.8s1.800.8 3 .7c1.300 0 2.100-1.100 2.800-2.300.9-1.300 1.300-2.600 1.300-2.700-.1 0-2.5-1-2.5-3.900zM11.800 3.700c.6-.8 1.100-1.900.9-3-.9 0-2.100.6-2.800 1.400-.6.700-1.100 1.800-1 2.900 1 .1 2.100-.5 2.900-1.300z"/></svg>Continue with Apple</button>
+      <button class="btn alt" data-auth="Google">Continue with Google</button>
+      <button class="btn alt" data-auth="Email">Email me a sign-in link</button>
+      <label style="display:flex;gap:8px;font-size:12px;color:var(--muted);align-items:flex-start"><input type="checkbox" style="margin-top:2px"> Send me product updates (optional)</label>
+      <p style="font-size:12px;color:var(--muted)">By continuing you accept the Terms and Disclaimers. Your email is verified by Apple, Google, or the link itself.</p>
+      <button class="btn ghost" id="auth-x">Not now</button>
+    </div>
+  </div></div>
+
+  <div class="sheet" id="sheet-ask"><div>
+    <h2 id="ask-t"></h2>
+    <p class="sub" id="ask-s"></p>
+    <div class="gap">
+      <button class="btn" id="ask-yes"></button>
+      <button class="btn alt" id="ask-alt" style="display:none"></button>
+      <button class="btn ghost" id="ask-no">Maybe later</button>
+    </div>
+  </div></div>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}};
+const money=n=>'$'+Math.round(n).toLocaleString('en-US');
+const short=n=>n>=1e6?'$'+(n/1e6).toFixed(n>=1e7?1:2).replace(/\.?0+$/,'')+'M':'$'+Math.round(n/1e3)+'K';
+
+/* Same math as lib/valuation-engine.ts computeCam, DEFAULT_ASSUMPTIONS */
+const A={primeRate:.07,sbaSpread:.03,debtCoverage:1.25,termYears:10,loanToValue:.9,ownerLoadPct:.2,rangeSpreadPct:.05};
+function pv(r,n,p){return r===0?p*n:p*(1-Math.pow(1+r,-n))/r}
+function cam(earnings,replace){
+  const avail=earnings-replace*(1+A.ownerLoadPct);
+  const monthly=avail/12/A.debtCoverage;
+  const rate=A.primeRate+A.sbaSpread;
+  const loan=pv(rate/12,A.termYears*12,monthly);
+  const tx=loan/A.loanToValue;
+  const rd=v=>Math.round(v/25000)*25000;
+  return{tx,loan,down:tx-loan,monthly,multiple:tx/earnings,lo:rd(tx*(1-A.rangeSpreadPct)),hi:rd(tx*(1+A.rangeSpreadPct))};
+}
+
+/* Illustrative smart defaults for the prototype only: owner-earnings margin and replacement pay per owner */
+const IND={
+  restaurant:{n:'Restaurant or food service',m:.12,p:70000,i:'<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 2-2.5 5-2.5 8h2.5v10"/>'},
+  retail:{n:'Retail or e-commerce',m:.10,p:65000,i:'<path d="M5 8h14l-1 12H6zM9 8a3 3 0 0 1 6 0"/>'},
+  prof:{n:'Professional services',m:.25,p:110000,i:'<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5h6v2M4 13h16"/>'},
+  trades:{n:'Construction or trades',m:.14,p:90000,i:'<path d="M3 20h18M5 20V10l7-6 7 6v10M10 20v-5h4v5"/>'},
+  health:{n:'Healthcare or dental',m:.22,p:130000,i:'<path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.5A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"/>'},
+  home:{n:'Home services',m:.16,p:75000,i:'<path d="M14 7a4 4 0 0 0-5 5l-6 6 3 3 6-6a4 4 0 0 0 5-5l-3 3-2-2z"/>'},
+  mfg:{n:'Manufacturing',m:.12,p:100000,i:'<path d="M3 21V10l6 4V10l6 4V6h6v15z"/>'},
+  transport:{n:'Transportation or logistics',m:.13,p:75000,i:'<path d="M2 16V7h11v9M13 10h5l3 3v3h-8M6 19a2 2 0 1 0 0-.1M17 19a2 2 0 1 0 0-.1"/>'},
+  other:{n:'Something else',m:.15,p:85000,i:'<circle cx="12" cy="12" r="9"/><path d="M8 12h.01M12 12h.01M16 12h.01"/>'}
+};
+const REV_STEPS=[100e3,250e3,500e3,750e3,1e6,1.5e6,2e6,3e6,5e6,7.5e6,10e6,15e6,20e6];
+const revFromSlider=v=>{const x=v/100*(Math.log(20e6)-Math.log(100e3))+Math.log(100e3);const r=Math.exp(x);const step=r<1e6?25e3:r<5e6?100e3:250e3;return Math.round(r/step)*step};
+const sliderFromRev=r=>Math.round((Math.log(r)-Math.log(100e3))/(Math.log(20e6)-Math.log(100e3))*100);
+
+const S={role:null,industry:null,rev:1e6,margin:.12,owners:1,saved:false,accuracy:1};
+const ORDER=['welcome','role','industry','revenue','profit','owners','result'];
+let cur='welcome', hist=[];
+
+function compute(){
+  const ind=IND[S.industry||'other'];
+  const earnings=S.rev*S.margin;
+  let replace=ind.p*S.owners, adj=false;
+  if(replace*(1+A.ownerLoadPct)>earnings*.6){replace=earnings*.6/(1+A.ownerLoadPct);adj=true}
+  const c=cam(earnings,replace);
+  if(c.tx<250000){const r5=v=>Math.max(5000,Math.round(v/5000)*5000);c.lo=r5(c.tx*(1-A.rangeSpreadPct));c.hi=r5(c.tx*(1+A.rangeSpreadPct))}
+  return{...c,earnings,replace,adj};
+}
+
+function go(id,back){
+  if(id===cur)return;
+  const from=$('#s-'+cur), to=$('#s-'+id);
+  from.classList.remove('on'); if(!back)from.classList.add('out');
+  to.classList.remove('out'); if(back)to.style.transform='translateX(-16px)';
+  requestAnimationFrame(()=>{to.style.transform='';to.classList.add('on');setTimeout(()=>from.classList.remove('out'),200)});
+  if(!back)hist.push(cur); cur=id; $('#app').dataset.step=id;
+  const i=ORDER.indexOf(id), q=i>=1&&i<=5;
+  $('#bar').classList.toggle('on',q); $('#ct').classList.toggle('on',q);
+  $('#back').classList.toggle('on',id!=='welcome'&&id!=='home');
+  if(q){$('#barfill').style.width=(i/5*100)+'%';$('#ct').textContent=i+'/5'}
+  if(id==='result'){$('#bar').classList.add('on');$('#barfill').style.width='100%';$('#ct').classList.remove('on')}
+  onEnter(id); showNote();
+}
+function next(){const i=ORDER.indexOf(cur);if(i<ORDER.length-1)go(ORDER[i+1])}
+
+function onEnter(id){
+  if(id==='industry'){
+    $('#q-industry').textContent=S.role==='buyer'?'What kind of business are you targeting?':S.role==='advisor'?"What's your client's business?":'What kind of business is it?';
+  }
+  if(id==='revenue'||id==='profit')refreshLive();
+  if(id==='profit'){
+    $('#ind-name').textContent=(IND[S.industry]||IND.other).n.toLowerCase();
+    syncProfit();
+  }
+  if(id==='result')renderResult();
+  if(id==='home')renderHome();
+}
+
+function refreshLive(){
+  const c=compute();
+  const t=short(c.lo)+' to '+short(c.hi);
+  $('#live-rev b').textContent=t; $('#live-pr b').textContent=t;
+}
+
+function syncProfit(){
+  const ind=IND[S.industry||'other'];
+  $('#pr').value=Math.round(S.margin*100);
+  $('#pr-out').textContent=money(S.rev*S.margin);
+  const typ=Math.round(S.margin*100)===Math.round(ind.m*100);
+  $('#pr-hint').textContent=Math.round(S.margin*100)+'% of revenue · '+(typ?'typical for the industry':'typical is '+Math.round(ind.m*100)+'%');
+  $('#pr-reset').classList.toggle('sel',typ);
+  refreshLive();
+}
+
+function renderResult(){
+  const c=compute();
+  $('#r-range').textContent=short(c.lo)+' – '+short(c.hi);
+  $('#r-mult').textContent=c.multiple.toFixed(1)+'x earnings · based on what a lender would fund';
+  $('#r-loan').textContent=short(c.loan); $('#r-down').textContent=short(c.down); $('#r-pay').textContent=money(c.monthly)+'/mo';
+  $('#save').textContent=S.saved?'Back to my report':'Save this report';
+}
+
+function renderHome(){
+  const c=compute(), ind=IND[S.industry||'other'];
+  $('#h-range').textContent=short(c.lo)+' – '+short(c.hi);
+  $('#h-ind').textContent=ind.n+' · '+short(S.rev)+' revenue';
+  const labels=['Ballpark','Refined','Verified'];
+  $('#h-acc').textContent='Accuracy: '+labels[S.accuracy-1];
+  $('#h-acc2').textContent=S.accuracy+' of 3';
+  $$('#h-meter i').forEach((el,i)=>el.classList.toggle('f',i<S.accuracy));
+}
+
+/* Tiles */
+$('#industry-tiles').innerHTML=Object.entries(IND).map(([k,v])=>`<button class="tile" data-v="${k}"><svg viewBox="0 0 24 24">${v.i}</svg><span>${v.n}</span></button>`).join('');
+let advancing=false;
+$$('.tiles').forEach(g=>g.addEventListener('click',e=>{
+  const t=e.target.closest('.tile'); if(!t)return; buzz();
+  $$('.tile',g).forEach(x=>x.classList.remove('sel')); t.classList.add('sel');
+  const q=g.dataset.q, v=t.dataset.v;
+  if(q==='owners')S.owners=+v; else S[q]=v;
+  if(q==='industry'){S.margin=IND[v].m}
+  if(advancing)return;
+  advancing=true;setTimeout(()=>{advancing=false;next()},160);
+}));
+
+/* Revenue */
+$('#rev-chips').innerHTML=[250e3,500e3,1e6,2e6,5e6,10e6].map(v=>`<button class="chip" data-v="${v}">${short(v)}</button>`).join('');
+function syncRev(){
+  $('#rev-out').textContent=money(S.rev);
+  $('#rev').value=sliderFromRev(S.rev);
+  $$('#rev-chips .chip').forEach(c=>c.classList.toggle('sel',+c.dataset.v===S.rev));
+  refreshLive();
+}
+let lastTick=0;
+$('#rev').addEventListener('input',e=>{S.rev=revFromSlider(+e.target.value);const t=Math.floor(+e.target.value/4);if(t!==lastTick){lastTick=t;buzz()}syncRev()});
+$('#rev-chips').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;buzz();S.rev=+c.dataset.v;syncRev()});
+
+/* Profit */
+$('#pr').addEventListener('input',e=>{S.margin=+e.target.value/100;buzz();syncProfit()});
+$('#pr-reset').addEventListener('click',()=>{buzz();S.margin=IND[S.industry||'other'].m;syncProfit()});
+
+/* Nav */
+$$('[data-next]').forEach(b=>b.addEventListener('click',()=>{buzz();next()}));
+$('#back').addEventListener('click',()=>{const p=hist.pop();if(p)go(p,true)});
+$('#tweak').addEventListener('click',()=>{buzz();go('profit')});
+
+/* Deferred account */
+$('#save').addEventListener('click',()=>{buzz();if(S.saved)go('home');else $('#sheet-auth').classList.add('on')});
+$('#auth-x').addEventListener('click',()=>$('#sheet-auth').classList.remove('on'));
+$$('[data-auth]').forEach(b=>b.addEventListener('click',()=>{buzz();S.saved=true;$('#sheet-auth').classList.remove('on');setTimeout(()=>go('home'),120)}));
+
+/* Contextual asks, only when the user taps the feature that needs them */
+const ASK={
+  fin:{t:'Add your financials',s:'Upload last year\'s profit and loss, or connect QuickBooks (read-only). We pull revenue, cost of goods, expenses, interest, depreciation, owner payments, other adjustments, and year-over-year trends so nothing is retyped.',y:'Choose a file',alt:'Connect QuickBooks instead',acc:2},
+  biz:{t:'Business details',s:'Legal name, address, industry code (NAICS, pre-filled from your industry), years owned, other locations, and website or social links. Needed for the full report, not the estimate.',y:'Add details',acc:null},
+  bs:{t:'Balance sheet and assets',s:'Upload your balance sheet and we read it for you, or enter assets by hand. This is what moves the estimate to Verified.',y:'Choose a file',acc:3},
+  prof:{t:'Finish your profile',s:'Name, phone, state, zip, and a calendar booking link if you take meetings. Phone is only used for the text when your report is ready.',y:'Add profile',acc:null}
+};
+let askKey=null;
+$$('[data-ask]').forEach(r=>r.addEventListener('click',()=>{
+  askKey=r.dataset.ask; const a=ASK[askKey]; buzz();
+  $('#ask-alt').style.display=a.alt?'block':'none';$('#ask-alt').textContent=a.alt||'';$('#ask-t').textContent=a.t; $('#ask-s').textContent=a.s; $('#ask-yes').textContent=a.y;
+  $('#sheet-ask').classList.add('on');
+}));
+$('#ask-no').addEventListener('click',()=>$('#sheet-ask').classList.remove('on'));
+$('#ask-alt').addEventListener('click',()=>$('#ask-yes').click());
+$('#ask-yes').addEventListener('click',()=>{
+  buzz(); const a=ASK[askKey];
+  $(`[data-ask="${askKey}"]`).classList.add('done');
+  if(a.acc&&S.accuracy<a.acc){S.accuracy=a.acc;renderHome()}
+  $('#sheet-ask').classList.remove('on');
+});
+
+/* Review notes */
+const NOTES={
+  welcome:['Value-first','One outcome statement replaces the feature list. Account not mentioned. The real app starts with a signup form of 7 fields.'],
+  role:['Lightweight personalization','Replaces the old 5-checkbox "Why are you using ValuMate" screen plus the role dropdown on the profile page. One tap, and it changes copy on the next screens.'],
+  industry:['Smart defaults','Replaces the NAICS code search and address entry. Each tile preloads typical margin and owner pay, so no financial typing is required yet.'],
+  revenue:['Aha moment','Live estimate appears here, before the user has typed a single financial figure. Slider and chips give haptic ticks on supported devices.'],
+  profit:['Skip deep config','Replaces the P&L, payments-to-owner, other-expenses, balance-sheet, and assets forms. Starts at the industry-typical number and the live range moves as it changes.'],
+  owners:['Business-critical only','The fifth and last question. Owner replacement cost is the biggest lever in the CAM math after earnings.'],
+  result:['Deferred registration','The full estimate shows before any account exists. Email verification, phone, and password are gone from the front of the funnel.'],
+  home:['Progressive disclosure','Phone, P&L upload, and QuickBooks are each asked only when the user taps the feature that needs them. Accuracy meter shows what each step buys.']
+};
+function showNote(){const n=NOTES[cur];$('#rvp').innerHTML='<b>'+n[0]+'</b>'+n[1]}
+$('#rv').addEventListener('click',()=>$('#rvp').classList.toggle('on'));
+
+/* Init */
+$('#s-welcome').classList.add('on'); syncRev(); showNote();
+</script>
+</body>
+</html>
